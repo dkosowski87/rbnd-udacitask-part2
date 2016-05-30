@@ -18,7 +18,7 @@ class UdaciList
   end
 
   def delete(index)
-    if index > @items.length
+    if index > @items.size
       raise UdaciListErrors::IndexExceedsListSize , "Index exceeds the size of the list."
     else
       @items.delete_at(index - 1)
@@ -26,29 +26,39 @@ class UdaciList
   end
   
   def all
-    @title ? list_heading : print_separator(15)
-    print_items(@items)
+    print_list(@items)
   end
 
-  def filter(type)
-    @title ? list_heading : print_separator(15)
-    selected_items = @items.select { |item| item.format_type.downcase.strip == type }
-    raise UdaciListErrors::NoFoundItemsOfType, "There are no items of such type in the list." if selected_items.empty? 
-    print_items(selected_items)
+  def filter(item_type)
+    print_list(filter_items(item_type))
   end
 
   private
+
+  def filter_items(item_type)
+    filtered_items = @items.select { |item| item.format_type.strip == item_type }
+    if filtered_items.empty? 
+      raise UdaciListErrors::NoFoundItemsOfType, "There are no items of type '#{item_type}' in the list."
+    end
+    return filtered_items
+  end
+
+  def print_list(items)
+    list_heading
+    list_items(items) 
+  end
+
   def list_heading
-    print_separator(@title.length)
-    puts @title
-    print_separator(@title.length)
+    if @title
+      puts "-" * @title.length
+      puts @title
+      puts "-" * @title.length
+    else
+      puts "-" * 15
+    end
   end
 
-  def print_separator(length)
-    puts "-" * length
-  end
-
-  def print_items(items)
+  def list_items(items)
     items.each_with_index do |item, position|
       puts "#{position + 1}) #{item.details}"
     end

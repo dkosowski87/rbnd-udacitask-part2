@@ -21,6 +21,6 @@ module Listable
   end
 
   def format_type
-  	self.class.to_s.sub("Item", "").ljust(10)
+  	self.class.to_s.sub("Item", "").downcase.ljust(10)
   end
 end

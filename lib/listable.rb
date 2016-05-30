@@ -14,9 +14,13 @@ module Listable
 
 	 def format_priority(priority)
     value = " ⇧".colorize(:red) if priority == "high"
-    value = " ⇨".colorize(:orange) if priority == "medium"
+    value = " ⇨".colorize(:light_red) if priority == "medium"
     value = " ⇩".colorize(:yellow) if priority == "low"
     value = "" if !priority
     return value
+  end
+
+  def format_type
+  	self.class.to_s.sub("Item", "").ljust(10)
   end
 end

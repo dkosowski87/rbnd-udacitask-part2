@@ -26,10 +26,30 @@ class UdaciList
   end
   
   def all
-    puts "-" * @title.length
+    @title ? list_heading : print_separator(15)
+    print_items(@items)
+  end
+
+  def filter(type)
+    @title ? list_heading : print_separator(15)
+    selected_items = @items.select { |item| item.format_type.downcase.strip == type }
+    raise UdaciListErrors::NoFoundItemsOfType, "There are no items of such type in the list." if selected_items.empty? 
+    print_items(selected_items)
+  end
+
+  private
+  def list_heading
+    print_separator(@title.length)
     puts @title
-    puts "-" * @title.length
-    @items.each_with_index do |item, position|
+    print_separator(@title.length)
+  end
+
+  def print_separator(length)
+    puts "-" * length
+  end
+
+  def print_items(items)
+    items.each_with_index do |item, position|
       puts "#{position + 1}) #{item.details}"
     end
   end

@@ -10,6 +10,7 @@ require_relative "lib/todo"
 require_relative "lib/event"
 require_relative "lib/link"
 require_relative "lib/user"
+require_relative "lib/interface"
 
 # list = UdaciList.new(title: "Julia's Stuff")
 # list.add("todo", "Buy more cat food", due: "2016-02-03", priority: "low")
@@ -49,22 +50,30 @@ require_relative "lib/user"
 # new_list.filter("event")
 
 # USERS FEATURE
-user = User.new("Mike", "udacity")
-puts user.name
+# ---------------------
+# user = User.new("Mike", "udacity")
+# puts user.name
 
-puts user.find_by_name("Mike").name == "Mike" #should return true
-# user = User.new("Mike", "udacity") #should return NotUniqueUser "User with that name already exists."
-# user = User.new("John", "udaci") #should return NotValidPassword "The password should be at least 7 characters long."
+# puts User.find_by_name("Mike").name == "Mike" #should return true
+# # user = User.new("Mike", "udacity") #should return NotUniqueUser "User with that name already exists."
+# # user = User.new("John", "udaci") #should return NotValidPassword "The password should be at least 7 characters long."
 
-puts user.authenticate('udacity') #should return true
-# puts user.authenticate('wrong') #should raise AuthenticationFailure "Invalid password."
+# puts user.authenticate('udacity') #should return true
+# # puts user.authenticate('wrong') #should raise AuthenticationFailure "Invalid password."
 
-user.create_list(title: "Concert")
-user.print_lists # should return 1. Concert
-user.create_list(title: "Work")
-user.print_lists # should return 1. Concert, 2. Work
+# user.create_list(title: "Concert")
+# user.print_lists # should return 1. Concert
+# user.create_list(title: "Work")
+# user.print_lists # should return 1. Concert, 2. Work
 
-list1 = user.find_list(1)
-puts list1.title #should return Concert
-list2 = user.find_list_by_title("Work")
-puts list2.title #should_retur Work
+# list1 = user.find_list(1)
+# puts list1.title #should return Concert
+# list2 = user.find_list_by_title("Work")
+# puts list2.title #should_retur Work
+
+#INTERFACE FEATURE
+# ---------------------
+# user = User.new("Mike", "udacity")
+# user.create_list(title: "Groceries")
+# user.create_list(title: "Concert")
+# Interface.new.start

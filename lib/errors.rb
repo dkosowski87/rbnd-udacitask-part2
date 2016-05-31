@@ -19,4 +19,7 @@ module UdaciListErrors
 
   class AuthenticationFailure < StandardError
   end
+
+  class FailedLogin < StandardError
+  end
 end

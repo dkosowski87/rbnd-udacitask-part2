@@ -11,8 +11,8 @@ class User
 		add_to_users
 	end
 
-	def find_by_name(name)
-		@@users.find { |user| user.name == name }
+	def self.find_by_name(name)
+		user = @@users.find { |user| user.name == name }
 	end
 
 	def authenticate(password)
@@ -24,7 +24,9 @@ class User
 	end
 
 	def create_list(options={})
-		@lists.push UdaciList.new(options)
+		list = UdaciList.new(options)
+		@lists << list
+		return list
 	end
 
 	def print_lists
@@ -45,8 +47,8 @@ class User
 
 	private
 	def add_to_users
-		if find_by_name(name)
-			raise UdaciListErrors::NotUniqueUser, "User with that name already exists."
+		if User.find_by_name(name)
+			raise UdaciListErrors::NotUniqueUser, "User with name: '#{name}' already exists."
 		else
 			@@users << self
 		end

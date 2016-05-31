@@ -3,6 +3,7 @@ GEM
   specs:
     chronic (0.10.2)
     colorize (0.7.7)
+    terminal-table (1.5.2)
 
 PLATFORMS
   ruby
@@ -10,3 +11,4 @@ PLATFORMS
 DEPENDENCIES
   chronic (~> 0.10.2)
   colorize (~> 0.7.7)
+  terminal-table (~> 1.5, >= 1.5.2)

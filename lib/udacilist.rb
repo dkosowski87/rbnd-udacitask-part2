@@ -8,7 +8,7 @@ class UdaciList
 
   def add(type, description, options={})
     type = type.downcase
-    if ["todo", "event", "link"].include? type
+    if %w(todo event link).include? type
       @items.push TodoItem.new(description, options) if type == "todo"
       @items.push EventItem.new(description, options) if type == "event"
       @items.push LinkItem.new(description, options) if type == "link"  
@@ -44,23 +44,16 @@ class UdaciList
   end
 
   def print_list(items)
-    list_heading
-    list_items(items) 
-  end
-
-  def list_heading
-    if @title
-      puts "-" * @title.length
-      puts @title
-      puts "-" * @title.length
-    else
-      puts "-" * 15
-    end
+    puts Terminal::Table.new rows: list_items(items), 
+                             title: @title, 
+                             headings: %w(No. Type Description Other Priority)
   end
 
   def list_items(items)
+    rows = []
     items.each_with_index do |item, position|
-      puts "#{position + 1}) #{item.details}"
+      rows << ["#{position + 1}", item.details].flatten
     end
+    return rows
   end
 end

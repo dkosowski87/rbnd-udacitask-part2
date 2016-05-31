@@ -10,4 +10,13 @@ module UdaciListErrors
 
   class NoFoundItemsOfType < StandardError
   end
+
+  class NotUniqueUser < StandardError
+  end
+
+  class NotValidPassword < StandardError
+  end
+
+  class AuthenticationFailure < StandardError
+  end
 end

@@ -73,7 +73,7 @@ require_relative "lib/interface"
 
 #INTERFACE FEATURE
 # ---------------------
-# user = User.new("Mike", "udacity")
-# user.create_list(title: "Groceries")
-# user.create_list(title: "Concert")
-# Interface.new.start
+user = User.new("Mike", "udacity")
+user.create_list(title: "Groceries")
+user.create_list(title: "Concert")
+Interface.new.start

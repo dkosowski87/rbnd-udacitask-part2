@@ -20,6 +20,6 @@ module UdaciListErrors
   class AuthenticationFailure < StandardError
   end
 
-  class FailedLogin < StandardError
+  class NoUserFound < StandardError
   end
 end

@@ -4,11 +4,8 @@ class Interface
 
 	def start
 		@operator = HighLine.new
-		@operator.say "Welcome to UdaciTask. The best place to store and schedule your stuff.".colorize(:yellow)
-		@operator.choose do |menu|
-			menu.choice(:register) { register }
-  		menu.choice(:login) { login }
-		end
+		say "Welcome to UdaciTask. The best place to store and schedule your stuff."
+		show_possible_actions "register" => :register, "login" => :login
 	end
 
 	private
@@ -16,139 +13,141 @@ class Interface
 	#USER
 
 	def register
-		name = @operator.ask "Provide a username.".colorize(:yellow)
-		password = @operator.ask "Provide a password".colorize(:yellow)
+		name = ask "Provide a username."
+		password = ask_with_hidden_input "Provide a password"
 		@user = User.new(name, password)
 		user_menu
 	end
 
 	def login
-		name = @operator.ask "Enter your username.".colorize(:yellow)
-		password = @operator.ask "Enter your password.".colorize(:yellow)
-		@user = User.find_by_name(name)
-		if @user && @user.authenticate(password)
-			user_menu
-		else
-			raise UdaciListErrors::FailedLogin, "There was a problem with the credentials, check the username and password again"
-		end
+		name = ask "Enter your username."
+		password = ask_with_hidden_input "Enter your password."
+		@user = User.find_by_name!(name)
+		@user.authenticate(password)
+		user_menu
 	end
 
 	def user_menu
-		@operator.say "Hello #{@user.name}! What would you like to do today?".colorize(:yellow)
-		@operator.choose do |menu|
-  		menu.choice("Create a new list") { create_list_menu }
-  		menu.choice("Show all my lists") { display_all_user_lists }
-  		menu.choice("Exit app")
-		end
+		say "Hello #{@user.name}! What would you like to do today?"
+		show_possible_actions "Create a new list" => :create_list_menu, 
+									 				"Show all my lists" => :display_lists_menu, 
+									 				"Exit app" => nil
 	end
 
 	#CREATING LISTS
 
 	def create_list_menu
-		title = @operator.ask "Provid a title for the list.".colorize(:yellow)
+		title = ask "Provid a title for the list."
 		list = @user.create_list(title: title)
-		@operator.say "Would you like to add some items to the list?".colorize(:yellow)
-		@operator.choose do |menu|
-  		menu.choice("Yes") { list_items_menu(list) }
-  		menu.choice("No") { user_menu }
-		end
+		say "Would you like to add some items to the list?"
+		show_possible_actions "Yes" => [:list_items_menu, list], "No" => :user_menu
 	end
 
 	#SHOWING LISTS
 
-	def display_all_user_lists
+	def display_lists_menu
 		@user.print_lists
-		@operator.say "Should we take a closer look at any of the lists?".colorize(:yellow)
-		@operator.choose do |menu|
-  		@user.lists.each do |list|
-  			menu.choice("Show #{list.title}") {  display_user_list(list) }
-  		end
-  		menu.choice("Back to main menu") { user_menu }
-		end
+		say "Should we take a closer look at any of the lists?"
+		list_options = @user.lists.map { |list| ["Show #{list.title}", [:list_menu, list]] }.to_h 
+		list_options.merge!({"Back to main menu" => :user_menu})
+		show_possible_actions list_options
 	end
 
-	def display_user_list(list)
+	def list_menu(list)
 		list.all
-		@operator.say "Should we change anything?".colorize(:yellow)
-		@operator.choose do |menu|
-  		menu.choice("Add items to list") { list_items_menu(list) }
-  		menu.choice("Delete items from list") { delete_list_item(list) }
-  		menu.choice("Back to lists") { display_all_user_lists } 
-		end
+		say "Should we change anything?"
+		show_possible_actions "Add items to list" => [:list_items_menu, list], 
+									 				"Delete items from list" => [:delete_list_item_menu, list], 
+													"Back to lists" => :display_lists_menu
 	end
 
 	#ADDING LIST ITEMS
 
 	def list_items_menu(list)
-		@operator.say "What should we add?".colorize(:yellow)
-		@operator.choose do |menu|
-  		menu.choice("Todo") { todo_item_menu(list) }
-  		menu.choice("Event") { event_item_menu(list) }
-  		menu.choice("Link") { link_item_menu(list) } 
-		end
+		say "What should we add?"
+		show_possible_actions "Todo" => [:todo_item_menu, list], 
+									 				"Event" => [:event_item_menu, list], 
+									 			  "Link" => [:link_item_menu, list]
 	end
 
 	def after_item_add_menu(list)
-		@operator.say "Anything else?".colorize(:yellow)
-		@operator.choose do |menu|
-  		menu.choice("Add another item") { list_items_menu(list) }
-  		menu.choice("Back to list") { display_user_list(list) } 
-		end
+		say "Anything else?"
+		show_possible_actions "Add another item"=> [:list_items_menu, list], 
+									 				"Back to list" => [:list_menu, list]
 	end
 
 	#DELETING LIST ITEMS
 
-	def delete_list_item(list)
-		index = @operator.ask "Which position from the list should we delete.".colorize(:yellow)
+	def delete_list_item_menu(list)
+		index = ask "Which position from the list should we delete."
 		list.delete(index.to_i)
-		display_user_list(list)
+		list_menu(list)
 	end
 
-	#TODO ITEMS
+	#ITEMS OPTIONS
 
 	def todo_item_menu(list)
-		description = @operator.ask "Add a description.".colorize(:yellow)
-		due_date = select_item_date("Add a due date(optional, press enter to skip).")
+		description = ask "Add a description."
+		due_date = ask_with_default_value "Add a due date (optional, press enter to skip)."
   	priority = todo_item_priority_menu 
 		list.add("todo", description, due: due_date, priority: priority)
 		after_item_add_menu(list)
 	end
 
 	def todo_item_priority_menu
-		@operator.say "Add priority (optional):".colorize(:yellow)
-		@operator.choose do |menu|
-  		menu.choice("high") { "high" }
-  		menu.choice("medium") { "medium" } 
-  		menu.choice("low") { "low" }
-  		menu.choice("skip priority") { nil }
-		end
+		say "Add priority (optional):"
+		show_possible_values "high" => "high", 
+									 			 "medium" => "medium", 
+									 			 "low" => "low",
+									 			 "skip priority" => nil
 	end
 
-	#EVENTS
-
 	def event_item_menu(list)
-		description = @operator.ask "Add a description.".colorize(:yellow)
-		start_date = select_item_date("Add a start date(optional, press enter to skip).")
-		end_date = select_item_date ("Add a end date(optional, press enter to skip).")
+		description = ask "Add a description."
+		start_date = ask_with_default_value "Add a start date(optional, press enter to skip)."
+		end_date = ask_with_default_value "Add a end date(optional, press enter to skip)."
 		list.add("event", description, start_date: start_date, end_date: end_date)
 		after_item_add_menu(list)
 	end
 
-	#LINKS
-
 	def link_item_menu(list)
-		description = @operator.ask "Add a description.".colorize(:yellow)
-		site_name = @operator.ask "Add a site_name(optional, press enter to skip).".colorize(:yellow)
-		site_name = site_name.strip.empty? ? nil : site_name
+		description = ask "Add a description."
+		site_name = ask_with_default_value "Add a site_name(optional, press enter to skip)."
 		list.add("link", description, site_name: site_name)
 		after_item_add_menu(list)
 	end
 
-	#SHARED METHODS
+	#SHARED INTERFACE METHODS
 
-	def select_item_date(message)
-		date = @operator.ask message.colorize(:yellow)
-		date.strip.empty? ? nil : date
+	def say(message)
+		@operator.say message.colorize(:yellow)
 	end
 
+	def ask(message)
+		@operator.ask message.colorize(:yellow)
+	end
+
+	def ask_with_hidden_input(message)
+		@operator.ask(message.colorize(:yellow)) { |char| char.echo = "x" }
+	end
+
+	def ask_with_default_value(message)
+		date = @operator.ask(message.colorize(:yellow)) { |value| value.default = nil }
+	end
+
+	def show_possible_actions(options={})
+		@operator.choose do |menu|
+			options.each do |key, value|
+				menu.choice(key) { send(*value) if value }
+			end
+		end
+	end
+
+	def show_possible_values(options={})
+		@operator.choose do |menu|
+			options.each do |key, value|
+				menu.choice(key) { value }
+			end
+		end
+	end
 end

@@ -12,7 +12,12 @@ class User
 	end
 
 	def self.find_by_name(name)
-		user = @@users.find { |user| user.name == name }
+		user = @@users.find { |user| user.name.downcase == name.downcase }
+	end
+
+	def self.find_by_name!(name)
+		user = User.find_by_name(name)
+		!user ? raise(UdaciListErrors::NoUserFound, "No user found with name: #{name}.") : user
 	end
 
 	def authenticate(password)

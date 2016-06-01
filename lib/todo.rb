@@ -12,6 +12,7 @@ class TodoItem
     end
   end
   
+  #Includes formatted item data in an array for further manipulations (for example table style display)
   def details
     %W(#{format_type} 
        #{format_description(@description)} 

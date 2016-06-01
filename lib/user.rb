@@ -11,10 +11,12 @@ class User
 		add_to_users
 	end
 
+	#Finds a user by name, returns nil if no user found
 	def self.find_by_name(name)
 		user = @@users.find { |user| user.name.downcase == name.downcase }
 	end
 
+	#Finds a user by name, raises error if no user found.
 	def self.find_by_name!(name)
 		user = User.find_by_name(name)
 		!user ? raise(UdaciListErrors::NoUserFound, "No user found with name: #{name}.") : user
@@ -28,6 +30,7 @@ class User
 		end
 	end
 
+	#Creates a list, returns the created list.
 	def create_list(options={})
 		list = UdaciList.new(options)
 		@lists << list

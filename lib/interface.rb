@@ -2,6 +2,7 @@ class Interface
 
 	#APP START
 
+	#Starts the application, creates an instance of HighLine to act as an operator communicated through the interface.
 	def start
 		@operator = HighLine.new
 		say "Welcome to UdaciTask. The best place to store and schedule your stuff."
@@ -135,6 +136,10 @@ class Interface
 		date = @operator.ask(message.colorize(:yellow)) { |value| value.default = nil }
 	end
 
+	#Displays a HighLine::Menu with possible actions to take (methods to execute).
+	#Takes an options hash as an argument. 
+	#Keys are choices showed in the interfaces menu.
+	#Values are particular actions to take, in the form of arrays turned into arguments- this allows for using the send method to execute.
 	def show_possible_actions(options={})
 		@operator.choose do |menu|
 			options.each do |key, value|
@@ -143,6 +148,10 @@ class Interface
 		end
 	end
 
+	#Displays a HighLine::Menu with possible values to choose.
+	#Takes an options hash as an argument. 
+	#Keys are choices showed in the interfaces menu.
+	#Values are values to be returned.
 	def show_possible_values(options={})
 		@operator.choose do |menu|
 			options.each do |key, value|

@@ -35,6 +35,7 @@ class UdaciList
 
   private
 
+  #Returns filtered items by type as an array, returns an error if no item found of the specific type.
   def filter_items(item_type)
     filtered_items = @items.select { |item| item.format_type.strip == item_type }
     if filtered_items.empty? 
@@ -43,12 +44,14 @@ class UdaciList
     return filtered_items
   end
 
+  #Prints a particular items list in the form of a table.
   def print_list(items)
     puts Terminal::Table.new rows: list_items(items), 
                              title: @title, 
                              headings: %w(No. Type Description Other Priority)
   end
 
+  #Creates rows for a table format from particular list items.
   def list_items(items)
     rows = []
     items.each_with_index do |item, position|

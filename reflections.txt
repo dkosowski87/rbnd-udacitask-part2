@@ -1,13 +1,18 @@
 # What you added to Udacitask 2.0
 # -------------------------------------------------------
 1. What is the gem of your choice and how did you use it?
+	I used the terminal-table gem to create a better looking display of UdaciLists in the command line. 
 2. Describe the 2 features you added to the project.
-  a) Feature 1...
-  b) Feature 2...
+  a) Users - the possibility to create users and scope lists to particular users. A user must have an unique name and a valid password. I user can have many lists.
+  b) Interface - I used the HighLine gem to create an interface for the app. Now the user can register/login for the app and create lists, view lists, add items, etc. through the command line interface.
 
 # REFLECTIONS
 # -------------------------------------------------------
 1. How long did you spend working on this project?
+	It took me a total about 25 hours.
 2. What was the most rewarding challenge you conquered?
+	Constructing the interface of the app - using the HighLine gem, reading through its documentation and designing the proper objects and methods.
 3. What two additional features did you build? Why?
+	Answered above.
 4. Where do you still have room to grow?
+	Definitely in the usage of gems, and learning to read and understand their documentation.
